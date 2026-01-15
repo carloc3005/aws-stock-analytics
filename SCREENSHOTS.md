@@ -13,33 +13,33 @@ This document provides visual evidence of the complete, working implementation o
 ### 1. Data Ingestion Layer
 
 #### **Kinesis Data Stream Setup**
-![Kinesis Stream Creation](screenshots/01-kinesis-stream-creation.png)
+![Kinesis Stream Creation](screenshots/carloc-1.png)
 - **Stream Name:** `carloc-stock-market-stream`
 - **Capacity Mode:** On-demand (auto-scaling)
 - **Status:** Successfully created and active
 
 #### **Kinesis Stream Active**
-![Kinesis Stream Active](screenshots/02-kinesis-stream-active.png)
+![Kinesis Stream Active](screenshots/carloc-2.png)
 - **ARN:** `arn:aws:kinesis:us-west-2:677273281558:stream/carloc-stock-market-stream`
 - **Status:** Active
 - **Data Retention:** 1 day
 - **Creation Time:** January 13, 2026
 
 #### **Python Producer Script**
-![Producer Code](screenshots/03-producer-code.png)
+![Producer Code](screenshots/carloc-3.png)
 - Python script using `yfinance` and `boto3`
 - Streams stock data (AAPL) to Kinesis every 30 seconds
 - Includes error handling and retry logic
 
 #### **Data Streaming in Action**
-![Terminal Output](screenshots/04-terminal-streaming.png)
+![Terminal Output](screenshots/carloc-4.png)
 - **Proof:** Live terminal showing successful data transmission
 - HTTP Status: 200 (Success)
 - Real-time stock data being sent to Kinesis
 - Timestamp: January 14, 2026, 07:41 GMT
 
 #### **Kinesis Monitoring Metrics**
-![Kinesis Metrics](screenshots/05-kinesis-monitoring.png)
+![Kinesis Metrics](screenshots/carloc-5.png)
 - **Incoming Records:** 3.07G count
 - **PutRecord Latency:** ~5 milliseconds (excellent performance)
 - **PutRecord Success Rate:** 100%
@@ -50,14 +50,14 @@ This document provides visual evidence of the complete, working implementation o
 ### 2. Processing Layer
 
 #### **Lambda Function Code**
-![Lambda Code](screenshots/06-lambda-code.png)
+![Lambda Code](screenshots/carloc-10.png)
 - Processes Kinesis stream events in batches
 - Computes metrics: price change, moving average, anomaly detection
 - Converts Float → Decimal for DynamoDB compatibility
 - Stores data in both DynamoDB and S3
 
 #### **Lambda Trigger Configuration**
-![Lambda Trigger](screenshots/07-lambda-trigger.png)
+![Lambda Trigger](screenshots/carloc-18.png)
 - **Trigger Source:** DynamoDB table `carloc-stock-market-data`
 - **Batch Size:** 2 records
 - **Starting Position:** Latest
@@ -68,7 +68,7 @@ This document provides visual evidence of the complete, working implementation o
 ### 3. Storage Layer
 
 #### **DynamoDB Table Overview**
-![DynamoDB Table](screenshots/08-dynamodb-overview.png)
+![DynamoDB Table](screenshots/carloc-6.png)
 - **Table Name:** `carloc-stock-market-data`
 - **Partition Key:** symbol (String)
 - **Sort Key:** timestamp (String)
@@ -77,20 +77,20 @@ This document provides visual evidence of the complete, working implementation o
 - **ARN:** `arn:aws:dynamodb:us-west-2:677273281558:table/carloc-stock-market-data`
 
 #### **DynamoDB Monitoring**
-![DynamoDB Metrics](screenshots/09-dynamodb-monitoring.png)
+![DynamoDB Metrics](screenshots/carloc-7.png)
 - **GetRecords Latency:** ~9.39 milliseconds
 - **GetRecords Count:** Growing trend (20+ records)
 - Demonstrates active read/write operations
 
 #### **DynamoDB Table Data**
-![DynamoDB Items](screenshots/10-dynamodb-items.png)
+![DynamoDB Items](screenshots/carloc-8.png)
 - **Records Stored:** 3 AAPL entries shown
 - **Attributes:** symbol, timestamp, open, high, low, price, volume, change, change_percent, moving_average, previous_close, anomaly
 - **Timestamp Range:** 2026-01-14T20:07:42Z to 2026-01-14T20:08:43Z
 - Proof of processed, structured data with computed metrics
 
 #### **S3 Bucket - Raw Data Storage**
-![S3 Objects](screenshots/11-s3-bucket.png)
+![S3 Objects](screenshots/carloc-9.png)
 - **Total Objects:** 77 JSON files
 - **Structure:** Organized by timestamp (YYYY-MM-DDTHH-MM-SSZ.json)
 - **Size:** ~206-207 bytes per file
@@ -102,7 +102,7 @@ This document provides visual evidence of the complete, working implementation o
 ### 4. Analytics Layer
 
 #### **AWS Glue Configuration**
-![Glue Crawler Setup](screenshots/12-glue-crawler-config.png)
+![Glue Crawler Setup](screenshots/carloc-11.png)
 - **Data Store:** S3 (selected)
 - **Path:** `s3://a-bucket-3005/raw-data/`
 - **Table Format:** Standard AWS Glue table
@@ -110,7 +110,7 @@ This document provides visual evidence of the complete, working implementation o
 - Successfully configured for schema discovery
 
 #### **Glue Table Schema**
-![Glue Schema](screenshots/13-glue-schema.png)
+![Glue Schema](screenshots/carloc-12.png)
 - **Columns Discovered:** 8
   1. symbol (string)
   2. timestamp (string)
@@ -123,7 +123,7 @@ This document provides visual evidence of the complete, working implementation o
 - Automatic schema inference from JSON data
 
 #### **Athena Query #1: Basic SELECT**
-![Athena Query 1](screenshots/14-athena-query-basic.png)
+![Athena Query 1](screenshots/carloc-13.png)
 ```sql
 SELECT * FROM stock_data_table LIMIT 10;
 ```
@@ -134,7 +134,7 @@ SELECT * FROM stock_data_table LIMIT 10;
 - Shows complete historical stock data
 
 #### **Athena Query #2: Price Change Analysis**
-![Athena Query 2](screenshots/15-athena-query-price-change.png)
+![Athena Query 2](screenshots/carloc-14.png)
 ```sql
 SELECT symbol, price, previous_close,
        (price - previous_close) AS price_change
@@ -149,7 +149,7 @@ LIMIT 5;
 - Demonstrates SQL analytics on streaming data
 
 #### **Athena Query #3: Aggregate Functions**
-![Athena Query 3](screenshots/16-athena-query-aggregate.png)
+![Athena Query 3](screenshots/carloc-15.png)
 ```sql
 SELECT symbol, AVG(volume) AS avg_volume
 FROM stock_data_table
@@ -162,7 +162,7 @@ GROUP BY symbol;
 - Shows aggregation capabilities
 
 #### **Athena Query #4: Anomaly Detection**
-![Athena Query 4](screenshots/17-athena-query-filter.png)
+![Athena Query 4](screenshots/carloc-16.png)
 ```sql
 SELECT symbol, price, previous_close,
        ROUND(((price - previous_close) / previous_close) * 100, 2) AS change_percent
@@ -179,14 +179,14 @@ WHERE ABS(((price - previous_close) / previous_close) * 100) > 5;
 ### 5. Alerting Layer
 
 #### **SNS Subscription Confirmation**
-![SNS Confirmation](screenshots/18-sns-confirmation.png)
+![SNS Confirmation](screenshots/carloc-17.png)
 - **Service:** Simple Notification Service
 - **Status:** ✅ Subscription confirmed
 - **Subscription ID:** `arn:aws:sns:us-west-2:677273281558:MyStock_TrendAlerts:3d1b0e95-c26e-40f3-ab87-1350368005e0`
 - Proof of working email alert system
 
 #### **SNS Active Subscriptions**
-![SNS Subscriptions](screenshots/19-sns-subscriptions.png)
+![SNS Subscriptions](screenshots/carloc-19.png)
 - **Total Subscriptions:** 3 active
 - **Protocol:** EMAIL
 - **Endpoints:** 
