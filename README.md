@@ -208,13 +208,6 @@ Through this project, I gained hands-on experience with:
 9. **Troubleshooting** - CloudWatch logs and distributed system debugging
 10. **Infrastructure as Code** - AWS CLI for resource provisioning
 
-## 📞 Contact & Links
-
-- **GitHub**: [Your GitHub Profile]
-- **LinkedIn**: [Your LinkedIn]
-- **Portfolio**: [Your Portfolio Site]
-- **Email**: [Your Email]
-
 ## 🎓 Key Takeaways
 
 ### What This Project Proves
@@ -332,13 +325,6 @@ This architecture pattern applies to:
 - E-commerce clickstream analysis
 - Financial transaction monitoring
 - Gaming telemetry processing
-
-## 📞 Contact
-
-**Carlo** - [Your Email] - [Your LinkedIn]
-
-**Portfolio**: [Your Website]  
-**GitHub**: [Your GitHub Profile]
 
 ---
 
